@@ -31,10 +31,4 @@ def clean_weather_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    raw_df = extract_all_cities()
-    print(" Raw data:")
-    print(raw_df)
-
-    clean_df = clean_weather_data(raw_df)
-    print("\n Cleaned & transformed data:")
-    print(clean_df)
+    print("transform_data.py")
