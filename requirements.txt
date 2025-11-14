@@ -1,7 +1,6 @@
-cat > requirements.txt <<'REQ'
-requests
 pandas
+requests
 sqlalchemy
 psycopg2-binary
 streamlit
-REQ
+

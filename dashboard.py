@@ -1,40 +1,25 @@
-cat > dashboard.py <<'PY'
 import streamlit as st
 import pandas as pd
-import os
 from sqlalchemy import create_engine
+import os
+
+st.title("🌦️ Indian Weather Dashboard")
+st.write("Displays weather data loaded into PostgreSQL.")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-st.title("🌦 India Weather Dashboard")
-
-if not DATABASE_URL:
-    st.error("❌ DATABASE_URL not found. Set environment variable.")
-    st.stop()
-
-engine = create_engine(DATABASE_URL)
-
 @st.cache_data
 def load_data():
-    return pd.read_sql("SELECT * FROM weather_reports ORDER BY extracted_at DESC", engine)
+    engine = create_engine(DATABASE_URL)
+    return pd.read_sql("SELECT * FROM weather_reports", engine)
 
 df = load_data()
 
-st.subheader("Latest Weather Data")
-st.dataframe(df, width="container")
+st.dataframe(df, use_container_width=True)
 
-city_list = df["city"].unique()
+city = st.selectbox("Choose City", df["city"].unique())
+filtered = df[df["city"] == city]
 
-city = st.selectbox("Select city:", city_list)
+st.write("### City Weather Details")
+st.write(filtered)
 
-st.subheader(f"📊 Weather Trends for {city}")
-
-city_df = df[df["city"] == city].sort_values("extracted_at")
-
-st.line_chart(
-    city_df,
-    x="extracted_at",
-    y=["temperature_c", "humidity_%", "wind_speed_m_s"],
-    width="container"
-)
-PY
